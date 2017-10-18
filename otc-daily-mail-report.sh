@@ -18,6 +18,9 @@ command -v swaks >/dev/null 2>&1 || {
         echo >&2 -e "\n["$0"] ToDo: apt-get install swaks . Aborting.\n";
         exit 1;
 }
+
+DEBUG=false;
+
 OTC_SHELL=`locate otc.sh` ;
 SWAKS=`which swaks`;
 
@@ -28,7 +31,7 @@ if [ -r ~/.ostackrc ];
 then
 	source ~/.ostackrc
 else
-	echo >&2 -e "\n["$0"] Config: ~./ostackrc not found/readable . Aborting.\n";
+	echo >&2 -e "\n["$0"] config: ~./ostackrc not found/readable . Aborting.\n";
 	exit 1;	
 fi
 
@@ -46,6 +49,7 @@ SUBJECT="OTC Report" ;
 HEAD="" ;
 BODY="" ;
 NOACTION="nothing happend";
+VMS=$($OTC_SHELL ecs list | wc -l) ;
 
 # date from yesterday 00:00:00 - 23:59:59
 # yesterday
@@ -77,15 +81,27 @@ function createHTMLhead {
 			h1 { color: #E20074; font-size: 1.5em; }
 			th { color: white; background: #E20074; font-size: 1.2em; }
 			th, td { text-align:left; padding-left: 1em; padding-right: 1em; }
-			#mailhead { background-color: white; font-size: 1.5em; color: #E20074; margin: 1em 0 1em 0; padding-left: 0.5em; width: max-content; }
+			#reporthead { background-color: white; font-size: 1.5em; color: #E20074; width: 920px; }
 			#reporttbl { padding-left: 0.5em; width: 920px; }
 		</style>
 	</head>
 	<body>
-	<div id='mailhead'>
+	<div style='margin: 1em 0 1em 0;'> 
 	<h1>OTC Report</h1>
-	Domain:&nbsp;$OTCDOM<br />
-	Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$DATE<br />
+	<table id='reporthead'>
+		<tr>
+			<td>Domain</td>
+			<td>$OTCDOM</td>
+		</tr>
+		<tr>
+			<td>VMs</td>
+			<td>$VMS</td>
+		</tr>
+		<tr>
+			<td>Date</td>
+			<td>$DATE</td>
+		</tr>
+	</table>
 	</div>
 	" ;
 }
@@ -290,6 +306,57 @@ function generateCTS {
 	BODY+="</tbody></table><br /><br />" ;
 }
 
+function generateUSERS {
+	### table cts head
+	USERLIST=$($OTC_SHELL iam users) ;
+	BODY+="
+	<table id='reporttbl'>
+	<thead>
+		<tr>
+			<th>User</th>
+			<th>Active</th>
+			<th>Full Name</th>
+		</tr>
+		<tr>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+	</thead>
+	" ;
+
+	### table auth content
+	BODY+="<tbody>" ;
+	n=0 ; 
+	while read -r LINE;
+	do
+		array=(${LINE//,/}) ;
+		arraylength=${#array[@]} ;
+		#($DEBUG) && echo -e "ArrayLength: ${arraylength}\n" ;
+		modulo=$((n%2)) ;
+		if [[ ${arraylength} == 6 ]];
+		then
+			if [[ $modulo == 0 ]];
+			then
+				BODY+="<tr style='background:lightgrey;'>" ;
+			else
+				BODY+="<tr>" ;
+			fi			
+			for (( i=1; i<(${arraylength}-2); i++ ));
+			do
+				#($DEBUG) && echo -e "${array[$i]}" ;
+				if [[ $i == 3 ]];
+				then
+					BODY+="<td>${array[$i]} ${array[$i+1]}</td>" ;
+				else
+					BODY+="<td>${array[$i]}</td>" ;
+				fi
+			done
+			BODY+="</tr>"
+			n=$(($n+1)) ;
+		fi
+	done <<< "$USERLIST"
+	BODY+="</tbody></table><br /><br />" ;
+
+}
 ### table footer ############################################################
 function createHTMLfoot {
 	BODY+="
@@ -320,12 +387,18 @@ function sendMail {
 }	
 
 ### call functions ##########################################################
+# keep order:
 createHTMLhead ;
 generateIAM ;
 generateECS ;
 generateCTS ;
+generateUSERS ;
 createHTMLfoot ;
-#echo "$HEAD$BODY" ;
-sendMail ;
+if ($DEBUG)
+then 
+	echo "$HEAD$BODY" ;
+else
+	sendMail ;
+fi
 
 exit 0
