@@ -359,10 +359,11 @@ function generateUSERS {
 }
 ### table footer ############################################################
 function createHTMLfoot {
+	DATE=$(date +"%Y-%m-%d %H:%M:%S %:z") ;
 	BODY+="
 	<table id='reporttbl'>
 	<tr><td colspan='5'>&nbsp;</td></tr>
-	<tr><td colspan=5 style='font-size:0.8em;text-align:right;'>Generated on $DATE by T-Systems MMS @$OTCUSER</td></tr>
+	<tr><td colspan=5 style='font-size:0.6em;text-align:right;'>Generated on $DATE by T-Systems MMS @$OTCUSER</td></tr>
 	</table>
 	</body>
 	</html>
