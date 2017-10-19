@@ -359,7 +359,8 @@ function generateUSERS {
 }
 ### table footer ############################################################
 function createHTMLfoot {
-	DATE=$(date +"%Y-%m-%d %H:%M:%S %:z") ;
+	#DATE=$(date +"%Y-%m-%d %H:%M:%S %:z") ;
+	DATE=$(date +"%Y-%m-%d %H:%M:%S %Z") ;
 	BODY+="
 	<table id='reporttbl'>
 	<tr><td colspan='5'>&nbsp;</td></tr>
