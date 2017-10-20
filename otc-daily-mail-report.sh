@@ -82,7 +82,8 @@ function createHTMLhead {
 			th { color: white; background: #E20074; font-size: 1.2em; }
 			th, td { text-align:left; padding-left: 1em; padding-right: 1em; }
 			#reporthead { background-color: white; font-size: 1.5em; color: #E20074; width: 920px; }
-			#reporttbl { padding-left: 0.5em; width: 920px; }
+			#reporttbl { padding-left: 0.5em; width: 920px; border: 1px; border-color: lightgrey; border-style: none none solid none; }
+			#reportfoot { padding-left: 0.5em; width: 920px; }
 		</style>
 	</head>
 	<body>
@@ -362,7 +363,7 @@ function createHTMLfoot {
 	#DATE=$(date +"%Y-%m-%d %H:%M:%S %:z") ;
 	DATE=$(date +"%Y-%m-%d %H:%M:%S %Z") ;
 	BODY+="
-	<table id='reporttbl'>
+	<table id='reportfoot'>
 	<tr><td colspan='5'>&nbsp;</td></tr>
 	<tr><td colspan=5 style='font-size:0.6em;text-align:right;'>Generated on $DATE by T-Systems MMS @$OTCUSER</td></tr>
 	</table>
