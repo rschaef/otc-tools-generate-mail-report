@@ -82,7 +82,7 @@ function createHTMLhead {
 			th { color: white; background: #E20074; font-size: 1.2em; }
 			th, td { text-align:left; padding-left: 1em; padding-right: 1em; }
 			#reporthead { background-color: white; font-size: 1.2em; color: #E20074; width: 920px; }
-			#reporttbl { padding-left: 0.5em; width: 920px; font-size: 0.8em; border: 1px; border-color: lightgrey; border-style: none none solid none; }
+			#reporttbl { padding-left: 0.5em; width: 920px; font-size: 1.0em; border: 1px; border-color: lightgrey; border-style: none none solid none; }
 			#reportfoot { padding-left: 0.5em; width: 920px; }
 		</style>
 	</head>
