@@ -77,6 +77,7 @@ function createHTMLhead {
 		<meta http-equiv='Cache' content='no-store'>
 		<title>Daily OTC Report</title>
 		<style>
+			* { font-family: arial; }
 			body { background-color: white; }			
 			h1 { color: #E20074; font-size: 1.5em; }
 			th { color: white; background: #E20074; font-size: 1.2em; }
@@ -361,11 +362,11 @@ function generateUSERS {
 ### table footer ############################################################
 function createHTMLfoot {
 	#DATE=$(date +"%Y-%m-%d %H:%M:%S %:z") ;
-	DATE=$(date +"%Y-%m-%d %H:%M:%S %Z") ;
+	#DATE=$(date +"%Y-%m-%d %H:%M:%S %Z") ;
 	BODY+="
 	<table id='reportfoot'>
 	<tr><td colspan='5'>&nbsp;</td></tr>
-	<tr><td colspan=5 style='font-size:0.6em;text-align:right;'>Generated on $DATE by T-Systems MMS @$OTCUSER</td></tr>
+	<tr><td colspan=5 style='font-size:0.6em;text-align:right;'>Generated on $(date +"%Y-%m-%d %H:%M:%S %Z") by T-Systems MMS @$OTCUSER</td></tr>
 	</table>
 	</body>
 	</html>
