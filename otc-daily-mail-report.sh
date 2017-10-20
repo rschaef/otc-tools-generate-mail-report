@@ -77,8 +77,7 @@ function createHTMLhead {
 		<meta http-equiv='Cache' content='no-store'>
 		<title>Daily OTC Report</title>
 		<style>
-			* { font-family: arial; }
-			body { background-color: white; }			
+			body { background-color: white; font-family: 'arial';}			
 			h1 { color: #E20074; font-size: 1.5em; }
 			th { color: white; background: #E20074; font-size: 1.2em; }
 			th, td { text-align:left; padding-left: 1em; padding-right: 1em; }
