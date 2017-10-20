@@ -78,11 +78,11 @@ function createHTMLhead {
 		<title>Daily OTC Report</title>
 		<style>
 			body { background-color: white; font-family: 'arial';}			
-			h1 { color: #E20074; font-size: 1.5em; }
+			h1 { color: #E20074; font-size: 1.4em; }
 			th { color: white; background: #E20074; font-size: 1.2em; }
 			th, td { text-align:left; padding-left: 1em; padding-right: 1em; }
-			#reporthead { background-color: white; font-size: 1.5em; color: #E20074; width: 920px; }
-			#reporttbl { padding-left: 0.5em; width: 920px; border: 1px; border-color: lightgrey; border-style: none none solid none; }
+			#reporthead { background-color: white; font-size: 1.2em; color: #E20074; width: 920px; }
+			#reporttbl { padding-left: 0.5em; width: 920px; font-size: 0.8em; border: 1px; border-color: lightgrey; border-style: none none solid none; }
 			#reportfoot { padding-left: 0.5em; width: 920px; }
 		</style>
 	</head>
