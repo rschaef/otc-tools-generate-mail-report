@@ -175,7 +175,7 @@ function generateIAM {
         done <<< "$IAMLIST"
         if [[ $action == 0 ]];
         then
-                BODY+="<tr><td colspan=5><font color='#E20074'><b>IAM: $NOACTION on $DATE</b></font></td></tr>" ;
+                BODY+="<tr><td colspan=5><font color='#E20074'><b>IAM Log: $NOACTION on $DATE</b></font></td></tr>" ;
         fi
         BODY+="</tbody></table><br /><br />" ;
 }
@@ -239,7 +239,7 @@ function generateECS {
         done <<< "$ECSLIST"
         if [[ $action == 0 ]];
         then
-                BODY+="<tr><td colspan=5><font color='#E20074'><b>ECS: $NOACTION on $DATE</b></font></td></tr>" ;
+                BODY+="<tr><td colspan=5><font color='#E20074'><b>ECS Log: $NOACTION on $DATE</b></font></td></tr>" ;
         fi
         BODY+="</tbody></table><br /><br />" ;
 }
@@ -302,7 +302,7 @@ function generateCTS {
         done <<< "$CTSLIST"
         if [[ $action == 0 ]];
         then
-                BODY+="<tr><td colspan=5><font color='#E20074'><b>CTS: $NOACTION on $DATE</b></font></td></tr>" ;
+                BODY+="<tr><td colspan=5><font color='#E20074'><b>CTS Log: $NOACTION on $DATE</b></font></td></tr>" ;
         fi
         BODY+="</tbody></table><br /><br />" ;
 }
