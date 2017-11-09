@@ -9,12 +9,12 @@
 #############################################################################
 
 command -v `locate otc.sh` >/dev/null 2>&1 || {
-                ### 'otc-tools' downloaded?
+        ### 'otc-tools' downloaded?
         echo >&2 -e "\n["$0"] ToDo: git clone https://github.com/OpenTelekomCloud/otc-tools.git . Aborting.\n";
         exit 1;
 }
 command -v swaks >/dev/null 2>&1 || {
-                ### 'swaks' [Swiss Army Knife SMTP] installed?
+        ### 'swaks' [Swiss Army Knife SMTP] installed?
         echo >&2 -e "\n["$0"] ToDo: apt-get install swaks . Aborting.\n";
         exit 1;
 }
@@ -376,17 +376,17 @@ function createHTMLfoot {
 function sendMail {
         MAILBODY=$(echo $HEAD$BODY | base64 ) ;
         $SWAKS  --from $FROM \
-                        --to $TO \
-                        --header "Subject: $SUBJECT $OTCDOM $DATE" \
-                        --header "X-Mailer: OTC swaks" \
-                        --add-header "MIME-Version: 1.0" \
-                        --add-header "Content-Type: text/html; charset=UTF-8" \
-                        --add-header "Content-transfer-encoding: base64" \
-                        --body "$MAILBODY" \
-                        --protocol ESMTP \
-                        --server $SMTP \
-                        --tls-optional \
-                        --silent 1
+                --to $TO \
+                --header "Subject: $SUBJECT $OTCDOM $DATE" \
+                --header "X-Mailer: OTC swaks" \
+                --add-header "MIME-Version: 1.0" \
+                --add-header "Content-Type: text/html; charset=UTF-8" \
+                --add-header "Content-transfer-encoding: base64" \
+                --body "$MAILBODY" \
+                --protocol ESMTP \
+                --server $SMTP \
+                --tls-optional \
+                --silent 1
 }
 
 ### call functions ##########################################################
@@ -399,9 +399,9 @@ generateUSERS ;
 createHTMLfoot ;
 if ($DEBUG)
 then
-        echo "$HEAD$BODY" ;
+    echo "$HEAD$BODY" ;
 else
-        sendMail ;
+    sendMail ;
 fi
 
 exit 0
