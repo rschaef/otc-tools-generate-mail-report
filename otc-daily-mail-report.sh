@@ -8,9 +8,9 @@
 #
 #############################################################################
 
-command -v `locate otc.sh` >/dev/null 2>&1 || {
+command -v otc >/dev/null 2>&1 || {
         ### 'otc-tools' downloaded?
-        echo >&2 -e "\n["$0"] ToDo: git clone https://github.com/OpenTelekomCloud/otc-tools.git . Aborting.\n";
+        echo >&2 -e "\n["$0"] ToDo: git clone https://github.com/OpenTelekomCloud/otc-tools.git or apt-get install otc-tools . Aborting.\n";
         exit 1;
 }
 command -v swaks >/dev/null 2>&1 || {
@@ -20,8 +20,9 @@ command -v swaks >/dev/null 2>&1 || {
 }
 
 DEBUG=false;
+#DEBUG=true;
 
-OTC_SHELL=`locate otc.sh` ;
+OTC_SHELL=`which otc` ;
 SWAKS=`which swaks`;
 
 ### read .ostackrc [ analog otc-tools ] #####################################
@@ -309,7 +310,14 @@ function generateCTS {
 
 function generateUSERS {
         ### table cts head
-        USERLIST=$($OTC_SHELL iam users) ;
+        USERLIST=$($OTC_SHELL iam users | \
+					jq -r '.users[] | [.name, .enabled, .description]' | \
+					sed -r 's/(\\n(\\t)*|"|\{|\}|\\|\[|\])//g' | \
+					sed -e 's/^[ \t]*//' | \
+					sed 's/:\s*/:/g' | \
+					sed -z 's/,\n/\t/g' | \
+					sed '/^$/d' \
+				) ;
         BODY+="
         <table id='reporttbl'>
         <thead>
@@ -331,33 +339,56 @@ function generateUSERS {
         do
                 array=(${LINE//,/}) ;
                 arraylength=${#array[@]} ;
-                #($DEBUG) && echo -e "ArrayLength: ${arraylength}\n" ;
+                ($DEBUG) && echo -e "ArrayLength: ${arraylength}\tLine: ${LINE}\n" ;
                 modulo=$((n%2)) ;
-                if [[ ${arraylength} == 6 ]];
+                if [[ $modulo == 0 ]];
                 then
-                        if [[ $modulo == 0 ]];
-                        then
-                                BODY+="<tr style='background:lightgrey;'>" ;
-                        else
-                                BODY+="<tr>" ;
-                        fi
-                        for (( i=1; i<(${arraylength}-2); i++ ));
-                        do
-                                #($DEBUG) && echo -e "${array[$i]}" ;
-                                if [[ $i == 3 ]];
-                                then
-                                        BODY+="<td>${array[$i]} ${array[$i+1]}</td>" ;
-                                else
-                                        BODY+="<td>${array[$i]}</td>" ;
-                                fi
-                        done
-                        BODY+="</tr>"
-                        n=$(($n+1)) ;
-                fi
+					BODY+="<tr style='background:lightgrey;'>" ;
+				else
+					BODY+="<tr>" ;
+				fi
+
+				### reale user eintraege
+				if [[ ${arraylength} == 4 ]];
+				then
+					for (( i=0; i<(${arraylength}-1); i++ ));
+					do
+						if [[ $i == 2 ]];
+						then
+							BODY+="<td>${array[$i]} ${array[$i+1]}</td>" ;
+						else
+							BODY+="<td>${array[$i]}</td>" ;
+						fi
+					done
+					BODY+="</tr>"
+					n=$(($n+1)) ;
+				fi
+
+				### otc user instanzen
+				if [[ ${arraylength} == 7 ]];
+				then
+					for (( i=0; i<(${arraylength}-1); i++ ));
+					do
+						if [[ $i == 0 ]];
+						then
+							BODY+="<td>${array[$i]}</td>" ;
+						fi
+						if [[ $i == 2 ]];
+						then
+							BODY+="<td>${array[$i]}</td>" ;
+						fi
+						if [[ $i == 3 ]];
+						then
+							BODY+="<td>${array[$i+1]} ${array[$i+3]}</td>" ;
+						fi
+					done
+					BODY+="</tr>"
+					n=$(($n+1)) ;
+				fi
         done <<< "$USERLIST"
         BODY+="</tbody></table><br /><br />" ;
-
 }
+
 ### table footer ############################################################
 function createHTMLfoot {
         #DATE=$(date +"%Y-%m-%d %H:%M:%S %:z") ;
@@ -376,17 +407,17 @@ function createHTMLfoot {
 function sendMail {
         MAILBODY=$(echo $HEAD$BODY | base64 ) ;
         $SWAKS  --from $FROM \
-                --to $TO \
-                --header "Subject: $SUBJECT $OTCDOM $DATE" \
-                --header "X-Mailer: OTC swaks" \
-                --add-header "MIME-Version: 1.0" \
-                --add-header "Content-Type: text/html; charset=UTF-8" \
-                --add-header "Content-transfer-encoding: base64" \
-                --body "$MAILBODY" \
-                --protocol ESMTP \
-                --server $SMTP \
-                --tls-optional \
-                --silent 1
+                        --to $TO \
+                        --header "Subject: $SUBJECT $OTCDOM $DATE" \
+                        --header "X-Mailer: OTC swaks" \
+                        --add-header "MIME-Version: 1.0" \
+                        --add-header "Content-Type: text/html; charset=UTF-8" \
+                        --add-header "Content-transfer-encoding: base64" \
+                        --body "$MAILBODY" \
+                        --protocol ESMTP \
+                        --server $SMTP \
+                        --tls-optional \
+                        --silent 1
 }
 
 ### call functions ##########################################################
@@ -399,9 +430,9 @@ generateUSERS ;
 createHTMLfoot ;
 if ($DEBUG)
 then
-    echo "$HEAD$BODY" ;
+        echo "$HEAD$BODY" | html2text ;
 else
-    sendMail ;
+        sendMail ;
 fi
 
 exit 0
